@@ -313,8 +313,6 @@ end
 ---@param appName string
 ---@return nil
 local function activateContextualBindings(appName)
-	clearContextualBindings(appName)
-
 	local bindings = M.config.contextualBindings[appName]
 	if not bindings then
 		log.df(string.format("No contextual bindings defined for: %s", appName))
@@ -367,7 +365,7 @@ local function setupWatcher()
 			string.format("Watcher event: App=%s, Event=%s", appName, eventType)
 		)
 
-		if eventType == hs.application.watcher.activated then
+		if eventType == hs.application.watcher.activated and appName ~= nil then
 			log.df(string.format("App activated: %s", appName))
 
 			activateContextualBindings(appName)
@@ -389,7 +387,10 @@ local function setupWatcher()
 			end
 		end
 
-		if eventType == hs.application.watcher.deactivated then
+		if
+			eventType == hs.application.watcher.deactivated
+			and appName ~= nil
+		then
 			log.df(string.format("App deactivated: %s", appName))
 			clearContextualBindings(appName)
 		end
